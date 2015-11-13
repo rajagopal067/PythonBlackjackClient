@@ -19,6 +19,17 @@ class MyStrategy(AbstractPlayerStrategy):
         self.splits = 0
         return 10
 
+    def has2_10pointcards(self,hand):
+        cards = hand['cards']
+        count_10pointcards = 0
+        for card in cards:
+            if card['cardValue']==10:
+                count_10pointcards +=1
+        if count_10pointcards > 1 and self.splits < 2:
+            return True
+        else:
+            return False
+
     def get_action(self, hand):
         value = hand['handValue']
         if len(hand['cards']) == 2:
@@ -31,6 +42,9 @@ class MyStrategy(AbstractPlayerStrategy):
         elif value > 21:
             return Actions.SURRENDER
         else:
+            if self.has2_10pointcards(hand):
+                self.splits += 1
+                return Actions.SPLIT
             return Actions.STAND
 
     def get_name(self):
